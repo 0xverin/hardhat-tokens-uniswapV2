@@ -3,6 +3,7 @@
  */
 
 pragma solidity =0.6.6;
+import "hardhat/console.sol";
 
 // import "@nomiclabs/buidler/console.sol";
 
@@ -558,8 +559,8 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
             uint256 liquidity
         )
     {
-        // console.log('amountADesired', amountADesired);
-        // console.log('amountBDesired', amountBDesired);
+        // console.log("amountADesired", amountADesired);
+        // console.log("amountBDesired", amountBDesired);
 
         (amountA, amountB) = _preAddLiquidity(
             tokenA,
@@ -572,7 +573,7 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
         address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
         liquidity = IUniswapV2Pair(pair).mint(to);
 
-        // console.log('liquidity', liquidity);
+        console.log("liquidity", liquidity);
     }
 
     function addLiquidityETH(
@@ -1426,7 +1427,8 @@ library UniswapV2Library {
                         hex"ff",
                         factory,
                         keccak256(abi.encodePacked(token0, token1)),
-                        hex"cd9980d60c65f467ce95b28761391358d47fd3b0b93f7b6c082f2112a75f7520" // init code hash
+                        // hex"cd9980d60c65f467ce95b28761391358d47fd3b0b93f7b6c082f2112a75f7520" // init code hash mainnet
+                        hex"5c21c11b28d535f5853c5bdbd8600afef97c5e0e804516adf745df3150688fc5" // init code hash
                     )
                 )
             )
