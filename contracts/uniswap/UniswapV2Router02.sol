@@ -573,7 +573,7 @@ contract UniswapV2Router02 is IUniswapV2Router02 {
         address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
         liquidity = IUniswapV2Pair(pair).mint(to);
 
-        console.log("liquidity", liquidity);
+        // console.log("liquidity", liquidity);
     }
 
     function addLiquidityETH(
