@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.6.12;
+import "hardhat/console.sol";
 
 interface IERC20 {
     function totalSupply() external view returns (uint256);
@@ -944,7 +945,7 @@ contract SafeMoon is Context, IERC20, Ownable {
         _rOwned[_msgSender()] = _rTotal;
 
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(
-            0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F
+            0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
         );
         // Create a uniswap pair for this new token
         uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
@@ -1361,6 +1362,7 @@ contract SafeMoon is Context, IERC20, Ownable {
         bool takeFee = true;
 
         //if any account belongs to _isExcludedFromFee account then remove the fee
+
         if (_isExcludedFromFee[from] || _isExcludedFromFee[to]) {
             takeFee = false;
         }
@@ -1433,7 +1435,6 @@ contract SafeMoon is Context, IERC20, Ownable {
         bool takeFee
     ) private {
         if (!takeFee) removeAllFee();
-
         if (_isExcluded[sender] && !_isExcluded[recipient]) {
             _transferFromExcluded(sender, recipient, amount);
         } else if (!_isExcluded[sender] && _isExcluded[recipient]) {

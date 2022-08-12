@@ -13,6 +13,7 @@ describe("RebaseDividendToken Token Test", function () {
     var WETH9;
     var BEP20USDT;
     var UniswapV2Pair;
+    var SafeMoon;
     it("init params", async function () {
         [deployer, user1, user2, user3, user4, user5] = await ethers.getSigners();
     });
@@ -35,23 +36,28 @@ describe("RebaseDividendToken Token Test", function () {
         const UniswapV2PairInstance = await ethers.getContractFactory("UniswapV2Pair");
         UniswapV2Pair = await UniswapV2PairInstance.deploy();
 
+        const SafeMoonInstance = await ethers.getContractFactory("SafeMoon");
+        SafeMoon = await SafeMoonInstance.deploy();
+
         console.log("UniswapV2Factory  :::::", UniswapV2Factory.address);
         console.log("UniswapV2Router02 :::::", UniswapV2Router02.address);
         console.log("UniswapV2Pair     :::::", UniswapV2Pair.address);
         console.log("BASEToken         :::::", BASEToken.address);
+        console.log("SafeMoon         :::::", SafeMoon.address);
         console.log("--------------------compile deployed------------------------");
     });
 
     //函数调用
     it("mint token", async function () {
-        await BASEToken.mint(deployer.address, 10000);
-        let balance = await BASEToken.balanceOf(deployer.address);
-        balance = ethers.utils.formatEther(balance);
+        await SafeMoon.transfer(user1.address, expandTo18Decimals(100));
+        await BEP20USDT.transfer(user1.address, expandTo18Decimals(100));
     });
 
     it("approve", async function () {
         await BASEToken.approve(UniswapV2Router02.address, MaxUint256);
         await BEP20USDT.approve(UniswapV2Router02.address, MaxUint256);
+        await SafeMoon.approve(UniswapV2Router02.address, MaxUint256);
+        await SafeMoon.connect(user1).approve(UniswapV2Router02.address, MaxUint256);
     });
 
     // it("addLiquidity", async function () {
@@ -91,10 +97,10 @@ describe("RebaseDividendToken Token Test", function () {
     // });
 
     //------------- SWAPPING ---------------
-    it("swapExactTokensForTokens", async function () {
+    it("swapExactTokensForTokensSupportingFeeOnTransferTokens", async function () {
         await UniswapV2Router02.addLiquidity(
             BEP20USDT.address,
-            BASEToken.address,
+            SafeMoon.address,
             expandTo18Decimals(100),
             expandTo18Decimals(100),
             expandTo18Decimals(1),
@@ -103,20 +109,21 @@ describe("RebaseDividendToken Token Test", function () {
             Math.floor(Date.now() / 1000) + 100,
         );
 
-        const pairAddress = await UniswapV2Factory.getPair(BEP20USDT.address, BASEToken.address);
+        const pairAddress = await UniswapV2Factory.getPair(BEP20USDT.address, SafeMoon.address);
         const Pair = UniswapV2Pair.attach(pairAddress);
         const oldres = await Pair.getReserves();
         console.log("oldres---", oldres);
 
-        await UniswapV2Router02.swapExactTokensForTokens(
+        await UniswapV2Router02.connect(user1).swapExactTokensForTokensSupportingFeeOnTransferTokens(
             expandTo18Decimals(10),
             expandTo18Decimals(1),
-            [BASEToken.address, BEP20USDT.address],
+            [SafeMoon.address, BEP20USDT.address],
             deployer.address,
             Math.floor(Date.now() / 1000) + 100,
         );
 
         const newres = await Pair.getReserves();
+
         console.log("newres---", newres);
     });
 });
