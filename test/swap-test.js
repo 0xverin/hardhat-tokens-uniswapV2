@@ -11,7 +11,7 @@ describe("RebaseDividendToken Token Test", function () {
     var UniswapV2Router02;
     var BASEToken;
     var WETH9;
-    var BEP20USDT;
+    var USDT;
     var UniswapV2Pair;
     it("init params", async function () {
         [deployer, user1, user2, user3, user4, user5] = await ethers.getSigners();
@@ -20,8 +20,8 @@ describe("RebaseDividendToken Token Test", function () {
         const BASETokenInstance = await ethers.getContractFactory("BASEToken");
         BASEToken = await BASETokenInstance.deploy();
 
-        const BEP20USDTInstance = await ethers.getContractFactory("BEP20USDT");
-        BEP20USDT = await BEP20USDTInstance.deploy();
+        const USDTInstance = await ethers.getContractFactory("USDT");
+        USDT = await USDTInstance.deploy();
 
         const WETH9Instance = await ethers.getContractFactory("WETH9");
         WETH9 = await WETH9Instance.deploy();
@@ -51,13 +51,13 @@ describe("RebaseDividendToken Token Test", function () {
 
     it("approve", async function () {
         await BASEToken.approve(UniswapV2Router02.address, MaxUint256);
-        await BEP20USDT.approve(UniswapV2Router02.address, MaxUint256);
+        await USDT.approve(UniswapV2Router02.address, MaxUint256);
     });
 
     // it("addLiquidity", async function () {
     //     //INIT_CODE_PAIR_HASH 需要从factory中获取然后修改掉 否则无法调用
     //     await UniswapV2Router02.addLiquidity(
-    //         BEP20USDT.address,
+    //         USDT.address,
     //         BASEToken.address,
     //         expandTo18Decimals(100),
     //         expandTo18Decimals(100),
@@ -67,7 +67,7 @@ describe("RebaseDividendToken Token Test", function () {
     //         Math.floor(Date.now() / 1000) + 100,
     //     );
 
-    //     const pairAddress = await UniswapV2Factory.getPair(BEP20USDT.address, BASEToken.address);
+    //     const pairAddress = await UniswapV2Factory.getPair(USDT.address, BASEToken.address);
     //     const Pair = UniswapV2Pair.attach(pairAddress);
     //     const res = await Pair.getReserves();
     //     // console.log(res);
@@ -93,7 +93,7 @@ describe("RebaseDividendToken Token Test", function () {
     //------------- SWAPPING ---------------
     it("swapExactTokensForTokens", async function () {
         await UniswapV2Router02.addLiquidity(
-            BEP20USDT.address,
+            USDT.address,
             BASEToken.address,
             expandTo18Decimals(100),
             expandTo18Decimals(100),
@@ -103,7 +103,7 @@ describe("RebaseDividendToken Token Test", function () {
             Math.floor(Date.now() / 1000) + 100,
         );
 
-        const pairAddress = await UniswapV2Factory.getPair(BEP20USDT.address, BASEToken.address);
+        const pairAddress = await UniswapV2Factory.getPair(USDT.address, BASEToken.address);
         const Pair = UniswapV2Pair.attach(pairAddress);
         const oldres = await Pair.getReserves();
         console.log("oldres---", oldres);
@@ -111,7 +111,7 @@ describe("RebaseDividendToken Token Test", function () {
         await UniswapV2Router02.swapExactTokensForTokens(
             expandTo18Decimals(10),
             expandTo18Decimals(1),
-            [BASEToken.address, BEP20USDT.address],
+            [BASEToken.address, USDT.address],
             deployer.address,
             Math.floor(Date.now() / 1000) + 100,
         );

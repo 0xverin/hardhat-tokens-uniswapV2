@@ -4,7 +4,7 @@
 
 pragma solidity 0.5.16;
 
-interface IBEP20 {
+interface IERC20 {
     /**
      * @dev Returns the amount of tokens in existence.
      */
@@ -371,7 +371,7 @@ contract Ownable is Context {
     }
 }
 
-contract BEP20USDT is Context, IBEP20, Ownable {
+contract USDT is Context, IERC20, Ownable {
     using SafeMath for uint256;
 
     mapping(address => uint256) private _balances;
